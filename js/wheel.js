@@ -3,6 +3,9 @@ const minRotations = 20;
 const textSwapSpeedFactor = 0.02; 	// more - slower
 const smoothBrakeCurve = 4.0; 		// Экспоненциальная кривая торможения (<1 - медленнее, >1 - быстрее)
 
+const WheelMaxSizePx = 500; 		
+const WheelCenterCircleSize = 0.06; // in % from canvas.height
+
 const perls_0 = [
   "Вы конченный.",
   "Чуть не сдох пока читал.",
@@ -83,15 +86,54 @@ const segments = [
 	{ text: "☆☆☆☆☆", color: '#292222', perls: perls_0 }
 ];
 
-const canvas = document.getElementById('wheelCanvas');
+function setupCanvas() {
+  const canvas = document.getElementById('wheelCanvas');
+  const container = canvas.parentElement;
+  
+  // Определяем размер на основе доступного пространства
+  const maxSize = Math.min(
+    window.innerWidth * 0.9, // 90% ширины экрана
+    window.innerHeight * 0.7, // 70% высоты экрана
+    WheelMaxSizePx
+  );
+  
+  // Устанавливаем размеры canvas
+  canvas.width = maxSize;
+  canvas.height = maxSize;
+  
+  // Обновляем радиус
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = Math.min(canvas.width, canvas.height) / 2 - 10;
+  
+  // drawWheel();
+  
+  return { canvas, ctx: canvas.getContext('2d'), centerX, centerY, radius };
+}
+
+function initCanvas() {
+  ({canvas, ctx, centerX, centerY, radius} = setupCanvas());
+  drawWheel();
+}
+// setupCanvas();
+
+window.addEventListener('load', initCanvas);
+window.addEventListener('resize', debounce(initCanvas, 200));
+
+function debounce(func, wait) {
+  let timeout;
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(func, wait);
+  };
+}
+
+// const canvas = document.getElementById('wheelCanvas');
 const selectedText = document.getElementById("selected-text");
 const estimationText = document.getElementById("estimation-text");
 const spinBtn = document.getElementById("spinBtn");
 
-const ctx = canvas.getContext('2d');
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
-const radius = Math.min(canvas.width, canvas.height) / 2 - 10;
+let canvas, ctx, centerX, centerY, radius;
 
 let currentRotation = 0;
 let isSpinning = false;
@@ -99,6 +141,10 @@ let currentSegment = 0;
 
 // Рисуем колесо
 function drawWheel() {
+	if (!canvas) return;
+	
+	console.log('canvas.height ', canvas.height);
+	console.log('canvas.width ', canvas.width);
 	
 	const segmentAngle = (2 * Math.PI) / segments.length;
 	
@@ -133,7 +179,7 @@ function drawWheel() {
 	
 	// Центральный круг
 	ctx.beginPath();
-	ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
+	ctx.arc(centerX, centerY, canvas.height * WheelCenterCircleSize, 0, 2 * Math.PI);
 	ctx.fillStyle = '#fff';
 	ctx.fill();
 	ctx.strokeStyle = '#000';
@@ -142,7 +188,7 @@ function drawWheel() {
 	
 	// Указатель
 	ctx.beginPath();
-	ctx.moveTo(centerX + radius + 20, centerY);
+	ctx.moveTo(centerX + radius + canvas.height * 0.04, centerY);
 	ctx.lineTo(centerX + radius, centerY - 15);
 	ctx.lineTo(centerX + radius, centerY + 15);
 	ctx.closePath();
@@ -240,7 +286,7 @@ function easeOutCubic(t) {
 }
 
 // Инициализация
-drawWheel();
+initCanvas();
 spinBtn.addEventListener('click', spinWheel);
 setTimeout(function() {
    spinWheel()

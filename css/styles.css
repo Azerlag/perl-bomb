@@ -1,3 +1,5 @@
+
+
 .container {
     display: flex;
     flex-direction: column;
@@ -7,9 +9,18 @@
     font-family: Arial, sans-serif;
 }
 
+/* #wheelCanvas { */
+	/* border-radius: 50%; */
+	/* box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); */
+/* } */
+
 #wheelCanvas {
-	border-radius: 50%;
-	box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px; /* Максимальный размер для десктопов */
+  height: auto;
+  /* aspect-ratio: 1/1; /* Сохраняем квадратную форму */ */
+  display: block;
+  margin: 0 auto;
 }
 
 #selected-text {
@@ -42,13 +53,15 @@ button:hover {
 }
 
 .page-header {
-    padding: 20px 0;   /* Отступы сверху и снизу */
+    padding: 20px 0;
 }
 
 .page-title {
-    margin: 0;         /* Убираем стандартные отступы */
-    font-size: 2.5rem;  /* Размер шрифта (можно адаптивный) */
-    font-weight: bold;  /* Жирный шрифт */
+    margin: 0;  
+	font-size: 2.5rem; 
+	font-weight: bold; 
+	border: 0px solid #ccc;
+	text-align: center;
 }
 
 .author-signature {
@@ -67,4 +80,20 @@ button:hover {
 .author-name {
   font-weight: bold;
   color: #333;
+}
+
+/* 768px (обычно планшеты и телефоны) */
+@media (max-width: 768px) {
+  p {
+    width: 90%;
+  }
+  .page-header {
+	  padding: 10px 0;
+  }
+  #selected-text {
+    margin: 10px 0;
+  }
+  .html span, .limg span, .cimg span {
+    font-size: 84%;
+  }
 }
