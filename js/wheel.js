@@ -3,8 +3,9 @@ const minRotations = 20;
 const textSwapSpeedFactor = 0.02; 	// more - slower
 const smoothBrakeCurve = 4.0; 		// Экспоненциальная кривая торможения (<1 - медленнее, >1 - быстрее)
 
-const WheelMaxSizePx = 450; 		
-const WheelCenterCircleSize = 0.06; // in % from canvas.height
+const WheelMaxSizePx = 450;
+const centerImageSrc = 'res/self_perl_img.png';		
+const WheelCenterCircleSize = 0.08; // in % from canvas.height
 
 const perls_0 = [
   "Вы конченный.",
@@ -72,7 +73,7 @@ const perls_4 = [
 
 const perls_5 = [
   "Отлично написанная статья, построенная на оригинальной и интересной идее, у которой нет заметных недостатков.",
-  "практически идеально написанная статья, творчески осмысляющая какую-то распространённую концепцию или идею.",
+  "Практически идеально написанная статья, творчески осмысляющая какую-то распространённую концепцию или идею.",
   "Шутка технически и содержательно выполнена отлично, хотел бы её видеть в основном пространстве.",
   "Отлично написанная лорная статья с интересным повествованием, которую приятно читать и перечитывать.",
 ];
@@ -124,7 +125,22 @@ function debounce(func, wait) {
   };
 }
 
-// const canvas = document.getElementById('wheelCanvas');
+const centerImage = new Image();
+centerImage.src = centerImageSrc;
+let isImageLoaded = false;
+
+centerImage.onload = function() {
+    isImageLoaded = true;
+    drawWheel(); // Перерисовываем колесо, когда изображение загружено
+};
+
+centerImage.onerror = function() {
+    console.error("Не удалось загрузить центральное изображение");
+    // Можно оставить fallback в виде круга
+    isImageLoaded = false;
+    drawWheel();
+};
+
 const selectedText = document.getElementById("selected-text");
 const estimationText = document.getElementById("estimation-text");
 const spinBtn = document.getElementById("spinBtn");
@@ -143,6 +159,8 @@ function drawWheel() {
 	// console.log('canvas.width ', canvas.width);
 	
 	const segmentAngle = (2 * Math.PI) / segments.length;
+	const centerRadius = canvas.height * WheelCenterCircleSize;
+	// const textFontPx = centerRadius * 10;
 	
 	// Рисуем сегменты
 	segments.forEach((segment, index) => {
@@ -174,13 +192,45 @@ function drawWheel() {
 	});
 	
 	// Центральный круг
-	ctx.beginPath();
-	ctx.arc(centerX, centerY, canvas.height * WheelCenterCircleSize, 0, 2 * Math.PI);
-	ctx.fillStyle = '#fff';
-	ctx.fill();
-	ctx.strokeStyle = '#000';
-	ctx.lineWidth = 3;
-	ctx.stroke();
+	if (isImageLoaded) {
+		ctx.save();
+		
+		// 1. Сначала создаем круглую маску
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+		ctx.closePath();
+		ctx.clip();
+		
+		// 2. Применяем трансформации для вращения
+		ctx.translate(centerX, centerY);
+		ctx.rotate(currentRotation);
+		
+		// 3. Рисуем изображение с учетом поворота
+		const imgSize = centerRadius * 2; // Немного больше для полного покрытия
+		ctx.drawImage(
+			centerImage,
+			-imgSize/2, -imgSize/2,
+			imgSize, imgSize
+		);
+		
+		ctx.restore();
+		
+		// 4. Обводка круга (поверх всего)
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+		ctx.strokeStyle = '#000';
+		ctx.lineWidth = 3;
+		ctx.stroke();
+    } else {
+        // Fallback в простой круг, если изображение не загрузилось
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+    }
 	
 	// Указатель
 	ctx.beginPath();
