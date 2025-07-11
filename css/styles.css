@@ -15,7 +15,7 @@
 /* } */
 
 #wheelCanvas {
-  width: 100%;
+  /* width: 100%; */
   max-width: 500px; /* Максимальный размер для десктопов */
   height: auto;
   /* aspect-ratio: 1/1; /* Сохраняем квадратную форму */ */
@@ -30,6 +30,7 @@
 }
 
 button {
+	margin: 30px 0px 0px 0px;
     padding: 10px 20px;
     font-size: 18px;
     background-color: #007bff;
@@ -40,6 +41,7 @@ button {
 }
 
 p {
+  margin: 0px 0px;
   display: flex;
   justify-content: center;
   align-items: center;   

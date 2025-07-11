@@ -3,7 +3,7 @@ const minRotations = 20;
 const textSwapSpeedFactor = 0.02; 	// more - slower
 const smoothBrakeCurve = 4.0; 		// Экспоненциальная кривая торможения (<1 - медленнее, >1 - быстрее)
 
-const WheelMaxSizePx = 500; 		
+const WheelMaxSizePx = 450; 		
 const WheelCenterCircleSize = 0.06; // in % from canvas.height
 
 const perls_0 = [
@@ -92,21 +92,17 @@ function setupCanvas() {
   
   // Определяем размер на основе доступного пространства
   const maxSize = Math.min(
-    window.innerWidth * 0.9, // 90% ширины экрана
-    window.innerHeight * 0.7, // 70% высоты экрана
+    window.innerWidth * 0.8,
+    window.innerHeight * 0.7,
     WheelMaxSizePx
   );
   
-  // Устанавливаем размеры canvas
   canvas.width = maxSize;
   canvas.height = maxSize;
   
-  // Обновляем радиус
   const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
   const radius = Math.min(canvas.width, canvas.height) / 2 - 10;
-  
-  // drawWheel();
   
   return { canvas, ctx: canvas.getContext('2d'), centerX, centerY, radius };
 }
@@ -202,7 +198,6 @@ function spinWheel() {
 	
 	isSpinning = true;
 	spinBtn.disabled = true;
-	selectedText.textContent = "Крутим...";
 	
 	const spinRotations = minRotations + Math.random() * minRotations;
 
@@ -224,7 +219,6 @@ function spinWheel() {
 
 			if (easeProgress-textSwapSpeedFactor >= prevProgress) {
 				selectedText.textContent = getRandomPerl();
-				// console.log('progress ', progress);
 				prevProgress = easeProgress;
 			}
 			
