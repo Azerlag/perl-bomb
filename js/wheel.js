@@ -139,8 +139,8 @@ let currentSegment = 0;
 function drawWheel() {
 	if (!canvas) return;
 	
-	console.log('canvas.height ', canvas.height);
-	console.log('canvas.width ', canvas.width);
+	// console.log('canvas.height ', canvas.height);
+	// console.log('canvas.width ', canvas.width);
 	
 	const segmentAngle = (2 * Math.PI) / segments.length;
 	

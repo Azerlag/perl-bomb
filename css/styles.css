@@ -26,11 +26,11 @@
 #selected-text {
     margin: 20px 0;
     font-size: 130%;
-	height: 15%;
+	MIN-HEIGHT: 15%;
 }
 
 button {
-	margin: 30px 0px 0px 0px;
+	/* margin: 30px 0px 0px 0px; */
     padding: 10px 20px;
     font-size: 18px;
     background-color: #007bff;
@@ -42,9 +42,6 @@ button {
 
 p {
   margin: 0px 0px;
-  display: flex;
-  justify-content: center;
-  align-items: center;   
   border: 0px solid #ccc;
   text-align: center;
   width: 50%;
