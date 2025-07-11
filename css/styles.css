@@ -33,6 +33,9 @@ button {
 
 p {
   margin: 0px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;   
   border: 0px solid #ccc;
   text-align: center;
   width: 50%;
